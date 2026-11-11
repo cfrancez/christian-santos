@@ -1,6 +1,6 @@
 // Ponto de entrada: descobre em qual página está e liga cada parte do site.
 import { SITE } from './config.js';
-import { linkWhatsApp, validarConfig, itensDaPagina } from './lib.js';
+import { linkWhatsApp, validarConfig, itensDaPagina, textoLancamentos } from './lib.js';
 import { movimentoReduzido, iniciarMenu, iniciarDigitacao, iniciarRevelar } from './efeitos.js';
 import { iniciarCapa, iniciarReel } from './reel.js';
 import { montarMosaico, observarLoops } from './portfolio.js';
@@ -25,6 +25,12 @@ document.querySelectorAll('a[data-whatsapp]').forEach((a) => {
 document.querySelectorAll('[data-rede]').forEach((el) => {
   const link = SITE.redes[el.dataset.rede];
   if (link) el.href = link;
+  else el.hidden = true;
+});
+
+document.querySelectorAll('[data-lancamentos]').forEach((el) => {
+  const texto = textoLancamentos(SITE.lancamentos);
+  if (texto) el.querySelector('strong').textContent = texto;
   else el.hidden = true;
 });
 

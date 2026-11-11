@@ -304,8 +304,15 @@ p { margin: 0; }
 /* ---------- Serviços de cada página ---------- */
 
 .servicos { display: grid; gap: 16px; }
-@media (min-width: 640px) { .servicos { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .servicos { grid-template-columns: repeat(3, 1fr); } }
+/* O último card ocupa a linha inteira quando sobraria sozinho. */
+@media (min-width: 640px) and (max-width: 999px) {
+  .servicos { grid-template-columns: repeat(2, 1fr); }
+  .servico:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (min-width: 1000px) {
+  .servicos { grid-template-columns: repeat(3, 1fr); }
+  .servico:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+}
 
 .servico {
   display: grid; align-content: start; gap: 14px;
@@ -316,6 +323,18 @@ p { margin: 0; }
 .servico:hover { border-color: rgba(191, 247, 71, .5); transform: translateY(-3px); }
 .servico-numero { font: 800 1rem/1 var(--fonte-titulo); color: var(--destaque); letter-spacing: .1em; }
 .servico h3 { font-size: clamp(1.8rem, 3vw, 2.3rem); }
+
+.credibilidade .numeros {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 0; border-top: 0; padding-top: 0;
+}
+.credibilidade .numeros strong { font-size: clamp(2rem, 5.5vw, 4rem); color: var(--destaque); }
+
+.diferenciais { display: grid; gap: 16px; padding: 0; margin: 0; list-style: none; }
+@media (min-width: 900px) { .diferenciais { grid-template-columns: repeat(3, 1fr); } }
+.diferenciais li { display: grid; align-content: start; gap: 12px; padding: 28px; border: 1px solid var(--borda); border-radius: var(--raio); }
+.diferenciais .icone { width: 28px; height: 28px; color: var(--destaque); }
+.diferenciais h3 { font-size: 1.7rem; }
 
 /* ---------- Reel na página ---------- */
 

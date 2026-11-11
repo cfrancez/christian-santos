@@ -40,6 +40,10 @@ export function categoriasPresentes(itens, categorias) {
   return Object.keys(categorias).filter((chave) => itens.some((item) => item.categoria === chave));
 }
 
+export function textoLancamentos(n) {
+  return n === null ? null : `+${n} lançamentos`;
+}
+
 export function validarConfig(site) {
   const erros = [];
   const digitos = String(site.whatsapp ?? '').replace(/\D/g, '');
