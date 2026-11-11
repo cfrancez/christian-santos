@@ -212,6 +212,17 @@ p { margin: 0; }
   .capa-rodape { grid-template-columns: 1fr auto; align-items: end; }
 }
 
+.capa--servico { min-height: 92svh; }
+.capa--servico h1 { font-size: clamp(3.6rem, 15vw, 10.5rem); line-height: .84; }
+.capa--sem-video { min-height: 82svh; }
+.capa--sem-video::before {
+  content: ''; position: absolute; inset: 0; z-index: -2;
+  background:
+    radial-gradient(50% 60% at 80% 30%, rgba(191, 247, 71, .16), transparent 70%),
+    repeating-linear-gradient(90deg, rgba(193, 193, 193, .05) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(0deg, rgba(193, 193, 193, .05) 0 1px, transparent 1px 120px);
+}
+
 /* ---------- Faixa correndo ---------- */
 
 .faixa-secao { overflow: hidden; padding-block: 36px; margin-top: -36px; position: relative; z-index: 2; }
@@ -227,6 +238,17 @@ p { margin: 0; }
   font: 800 clamp(1.8rem, 4vw, 3rem)/1 var(--fonte-titulo); text-transform: uppercase; white-space: nowrap;
 }
 .faixa-grupo .icone { width: .6em; height: .6em; }
+
+.faixa--escura {
+  width: 100%; margin: 0; transform: none;
+  background: transparent; color: var(--titulo);
+  border-block: 1px solid var(--borda);
+}
+.faixa--escura .faixa-trilho { animation-duration: 40s; }
+.faixa--escura .faixa-grupo { font-size: clamp(1.5rem, 3vw, 2.2rem); padding-block: .7em; }
+.faixa--escura .icone { color: var(--destaque); }
+.ferramentas { padding-block: 0; }
+.ferramentas .sobretitulo { display: flex; justify-content: center; margin-bottom: 20px; }
 
 /* ---------- Seções ---------- */
 
@@ -278,6 +300,66 @@ p { margin: 0; }
 }
 .frente-seta .icone { width: 22px; height: 22px; }
 .frente:hover .frente-seta { background: var(--destaque); color: var(--fundo); transform: rotate(45deg); }
+
+/* ---------- Serviços de cada página ---------- */
+
+.servicos { display: grid; gap: 16px; }
+@media (min-width: 640px) { .servicos { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .servicos { grid-template-columns: repeat(3, 1fr); } }
+
+.servico {
+  display: grid; align-content: start; gap: 14px;
+  padding: 28px;
+  background: var(--bloco); border: 1px solid var(--borda); border-radius: var(--raio);
+  transition: border-color .35s, transform .35s var(--suave);
+}
+.servico:hover { border-color: rgba(191, 247, 71, .5); transform: translateY(-3px); }
+.servico-numero { font: 800 1rem/1 var(--fonte-titulo); color: var(--destaque); letter-spacing: .1em; }
+.servico h3 { font-size: clamp(1.8rem, 3vw, 2.3rem); }
+
+/* ---------- Reel na página ---------- */
+
+.reel-player { position: relative; }
+.reel-player::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1;
+  border-radius: 17px; background: linear-gradient(135deg, var(--destaque), transparent 40%);
+  opacity: .5;
+}
+.reel-player { isolation: isolate; }
+
+/* ---------- Como funciona ---------- */
+
+.passos { display: grid; gap: 16px; padding: 0; margin: 0; list-style: none; counter-reset: passo; }
+@media (min-width: 640px) { .passos { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) { .passos { grid-template-columns: repeat(4, 1fr); } }
+.passos li {
+  counter-increment: passo;
+  display: grid; align-content: start; gap: 10px;
+  padding-top: 24px; border-top: 1px solid var(--borda);
+}
+.passos li::before {
+  content: '0' counter(passo);
+  font: 900 4rem/1 var(--fonte-titulo);
+  color: transparent; -webkit-text-stroke: 1.5px var(--destaque);
+}
+.passos h3 { font-size: 1.6rem; }
+
+/* ---------- Outras frentes ---------- */
+
+.outras { display: grid; gap: 16px; width: 100%; margin-top: 24px; }
+@media (min-width: 700px) { .outras { grid-template-columns: repeat(2, 1fr); } }
+.outra {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 24px 28px; text-align: left;
+  background: var(--bloco); border: 1px solid var(--borda); border-radius: var(--raio);
+  text-decoration: none;
+  transition: border-color .35s;
+}
+.outra span { display: block; font-size: .85rem; }
+.outra strong { display: block; font: 800 2.2rem/1 var(--fonte-titulo); text-transform: uppercase; color: var(--titulo); }
+.outra .frente-seta { position: static; flex: none; }
+.outra:hover { border-color: var(--destaque); }
+.outra:hover .frente-seta { background: var(--destaque); color: var(--fundo); transform: rotate(45deg); }
 
 /* ---------- Sobre ---------- */
 
@@ -345,11 +427,20 @@ p { margin: 0; }
   grid-auto-flow: dense;
   gap: var(--vao);
 }
-@media (min-width: 640px) { .mosaico { --colunas: 4; } }
-@media (min-width: 1100px) {
-  .mosaico { --colunas: 6; --vao: 14px; }
-  .mosaico--4 { --colunas: 4; }
+@media (min-width: 640px) { .mosaico { --colunas: 4; --vao: 14px; } }
+
+.mosaico-cta {
+  grid-column: span 2;
+  display: grid; align-content: center; justify-items: start; gap: 14px;
+  padding: clamp(20px, 3vw, 36px);
+  background: var(--destaque); color: var(--fundo); border-radius: 16px;
+  text-decoration: none;
+  transition: transform .35s var(--suave);
 }
+.mosaico-cta strong { font: 900 clamp(1.8rem, 3.6vw, 3.2rem)/.9 var(--fonte-titulo); text-transform: uppercase; }
+.mosaico-cta span { display: inline-flex; align-items: center; gap: .5em; font-weight: 700; }
+.mosaico-cta .icone { width: 1.2em; height: 1.2em; }
+.mosaico-cta:hover { transform: scale(.98); }
 
 .peca {
   position: relative; overflow: hidden; margin: 0;

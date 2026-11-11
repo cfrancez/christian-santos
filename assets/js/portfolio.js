@@ -72,7 +72,8 @@ export function montarMosaico(container, itens, categorias, base, filtros) {
     return;
   }
   const pecas = itens.map((item) => criarPeca(item, categorias, base));
-  container.append(...pecas);
+  // As peças entram antes do que já estiver no HTML (ex.: o card final de chamada).
+  container.prepend(...pecas);
 
   const presentes = categoriasPresentes(itens, categorias);
   if (filtros && presentes.length > 1) container.before(criarFiltros(presentes, categorias, pecas));
