@@ -1,10 +1,13 @@
 // Ponto de entrada: descobre em qual página está e liga cada parte do site.
 import { SITE } from './config.js';
-import { linkWhatsApp, validarConfig } from './lib.js';
+import { linkWhatsApp, validarConfig, itensDaPagina } from './lib.js';
 import { movimentoReduzido, iniciarMenu, iniciarDigitacao, iniciarRevelar } from './efeitos.js';
+import { iniciarCapa, iniciarReel } from './reel.js';
+import { montarMosaico, observarLoops } from './portfolio.js';
 
 const raiz = document.documentElement;
 const pagina = raiz.dataset.pagina;
+const base = raiz.dataset.base;
 const reduzido = movimentoReduzido();
 
 raiz.classList.add('js');
@@ -24,6 +27,19 @@ document.querySelectorAll('[data-rede]').forEach((el) => {
   if (link) el.href = link;
   else el.hidden = true;
 });
+
+const reel = SITE.reels[pagina] ?? null;
+iniciarCapa(reel, base, reduzido);
+iniciarReel(reel, base);
+
+montarMosaico(
+  document.querySelector('[data-mosaico]'),
+  itensDaPagina(SITE.portfolio, pagina, SITE.categorias),
+  SITE.categorias,
+  base,
+  pagina !== 'inicio',
+);
+observarLoops(reduzido);
 
 iniciarMenu();
 iniciarRevelar(reduzido);
