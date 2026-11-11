@@ -90,5 +90,14 @@ export const SITE = {
     peca('mcdonalds-mclanche-feliz', "McDonald's", 'McLanche Feliz', 'publicidade', 'horizontal', VIDEO),
     peca('evento-medicina', '', 'Evento presencial de medicina', 'cursos', 'horizontal', VIDEO),
     peca('plataforma-medicina', '', 'Plataforma de estudos de medicina', 'cursos', 'horizontal', VIDEO),
+    {
+      arquivo: 'assets/media/portfolio/este-site.jpg',
+      poster: 'assets/media/portfolio/este-site.jpg',
+      titulo: 'Este site',
+      marca: 'Christian Santos',
+      categoria: 'sites',
+      formato: 'horizontal',
+      paginas: ['sites'],
+    },
   ],
 };
