@@ -1,0 +1,4 @@
+<!-- Provisório: wordmark em texto até haver o logo oficial em SVG. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" width="300" height="120">
+<text x="150" y="88" text-anchor="middle" fill="#1E4FC2" font-family="Arial Black, Arial, sans-serif" font-size="96" font-weight="900" font-style="italic">Swift</text>
+</svg>
