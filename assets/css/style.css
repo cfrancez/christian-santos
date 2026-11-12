@@ -111,17 +111,26 @@ p { margin: 0; }
   transition: background .3s, border-color .3s;
   border-bottom: 1px solid transparent;
 }
-.topo--rolado, .topo--aberto {
+.topo--rolado {
   background: rgba(6, 6, 6, .86);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
+  border-bottom-color: var(--borda);
+}
+/* Com o menu aberto, nada de backdrop-filter: ele faria o painel (position: fixed)
+   se posicionar dentro do cabeçalho, em vez de cobrir a tela inteira. */
+.topo--aberto {
+  background: var(--fundo);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-bottom-color: var(--borda);
 }
 .topo .container { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 
 .marca {
   display: inline-flex; align-items: center; gap: .45em;
-  font: 800 1.45rem/1 var(--fonte-titulo); letter-spacing: .04em; text-transform: uppercase;
+  font: 800 clamp(1.1rem, 4.6vw, 1.45rem)/1 var(--fonte-titulo); letter-spacing: .04em; text-transform: uppercase;
+  white-space: nowrap;
   color: var(--titulo); text-decoration: none;
 }
 .marca .icone { color: var(--destaque); width: .8em; height: .8em; }
@@ -139,7 +148,9 @@ p { margin: 0; }
 .topo-cta span { display: none; }
 
 .menu-botao {
-  display: grid; place-items: center; gap: 6px;
+  /* place-content: center impede as 2 linhas da grade de esticarem — sem isso os traços
+     ficam longe um do outro e o X vira ">". */
+  display: grid; place-items: center; place-content: center; gap: 6px;
   width: 44px; height: 44px; padding: 0;
   background: transparent; border: 1px solid var(--borda); border-radius: 50%; cursor: pointer;
 }
@@ -213,7 +224,7 @@ p { margin: 0; }
 }
 
 .capa--servico { min-height: 92svh; }
-.capa--servico h1 { font-size: clamp(3.6rem, 15vw, 10.5rem); line-height: .84; }
+.capa--servico h1 { font-size: clamp(2.6rem, 15vw, 10.5rem); line-height: .84; }
 .capa--sem-video { min-height: 82svh; }
 .capa--sem-video::before {
   content: ''; position: absolute; inset: 0; z-index: -2;
@@ -513,11 +524,12 @@ p { margin: 0; }
 .youtube-moldura iframe { display: block; width: 100%; height: 100%; border: 0; }
 
 /* Ferramentas da página de Vídeo: selos no estilo dos ícones da Adobe. */
-.ferramentas-grade { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 0; margin: 0; list-style: none; }
-@media (min-width: 900px) { .ferramentas-grade { grid-template-columns: repeat(4, 1fr); } }
+/* minmax(0, 1fr): a palavra mais longa ("ILLUSTRATOR") não pode alargar a coluna. */
+.ferramentas-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 0; margin: 0; list-style: none; }
+@media (min-width: 900px) { .ferramentas-grade { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .ferramenta {
   display: grid; align-content: start; gap: 14px;
-  padding: 24px; background: var(--fundo); border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: clamp(16px, 4vw, 24px); background: var(--fundo); border: 1px solid var(--borda); border-radius: var(--raio);
   transition: transform .35s var(--suave), border-color .35s;
 }
 .ferramenta:hover { transform: translateY(-3px); border-color: rgba(191, 247, 71, .5); }
@@ -530,7 +542,8 @@ p { margin: 0; }
 .ferramenta-selo--pr, .ferramenta-selo--ae { background: #00005B; color: #9999FF; }
 .ferramenta-selo--ps { background: #001E36; color: #31A8FF; }
 .ferramenta-selo--ai { background: #330000; color: #FF9A00; }
-.ferramenta h3 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); }
+.ferramenta h3 { font-size: clamp(1.05rem, 4.6vw, 1.8rem); }
+@media (min-width: 900px) { .ferramenta h3 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); } }
 .ferramenta p { font-size: .92rem; }
 
 .filtros { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }

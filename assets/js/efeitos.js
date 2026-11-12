@@ -18,6 +18,9 @@ export function iniciarMenu() {
   botao.addEventListener('click', () => definir(botao.getAttribute('aria-expanded') !== 'true'));
   topo.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => definir(false)));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && definir(false));
+  // Tablet girado para a horizontal: o menu de computador aparece, então o do celular fecha
+  // (senão a página ficaria sem rolagem e sem botão para fechar).
+  window.matchMedia('(min-width: 900px)').addEventListener('change', (e) => e.matches && definir(false));
 
   const marcarRolagem = () => topo.classList.toggle('topo--rolado', window.scrollY > 24);
   window.addEventListener('scroll', marcarRolagem, { passive: true });
