@@ -1,5 +1,86 @@
 // Mosaico do portfólio: monta as peças, os filtros e toca cada loop só quando ele está na tela.
-import { caminho, ehVideo, categoriasPresentes } from './lib.js';
+import { caminho, ehVideo, categoriasPresentes, embedDoYoutube } from './lib.js';
+
+function icone(id) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'icone');
+  const uso = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  uso.setAttribute('href', `#${id}`);
+  svg.append(uso);
+  return svg;
+}
+
+// Popup único para os vídeos do YouTube, criado no primeiro clique.
+let popupYoutube;
+
+function criarPopupYoutube() {
+  const popup = document.createElement('dialog');
+  popup.className = 'reel-popup youtube-popup';
+  popup.setAttribute('aria-label', 'Vídeo do portfólio');
+  const caixa = document.createElement('div');
+  caixa.className = 'reel-caixa';
+  const fechar = document.createElement('button');
+  fechar.type = 'button';
+  fechar.className = 'reel-fechar';
+  fechar.dataset.fecharVideo = '';
+  fechar.setAttribute('aria-label', 'Fechar vídeo');
+  fechar.append(icone('i-fechar'));
+  const moldura = document.createElement('div');
+  moldura.className = 'youtube-moldura';
+  caixa.append(fechar, moldura);
+  popup.append(caixa);
+  document.body.append(popup);
+
+  // Tirar o player é o que faz o som parar; acontece antes de o popup fechar.
+  const tirarPlayer = () => moldura.replaceChildren();
+  const fecharPopup = () => {
+    tirarPlayer();
+    popup.close();
+  };
+  popup.addEventListener('cancel', tirarPlayer);
+  popup.addEventListener('close', tirarPlayer);
+  popup.addEventListener('click', (evento) => {
+    if (evento.target === popup) fecharPopup();
+  });
+  fechar.addEventListener('click', fecharPopup);
+  return popup;
+}
+
+function abrirYoutube(link, titulo) {
+  popupYoutube ??= criarPopupYoutube();
+  const player = document.createElement('iframe');
+  player.src = embedDoYoutube(link);
+  player.title = titulo;
+  player.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+  player.allowFullscreen = true;
+  popupYoutube.querySelector('.youtube-moldura').replaceChildren(player);
+  popupYoutube.showModal();
+}
+
+// Camada clicável sobre a peça: abre o vídeo no popup ou o site numa nova aba.
+function criarAbertura(item) {
+  const selo = document.createElement('span');
+  selo.className = 'peca-selo';
+  if (item.youtube) {
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'peca-abrir';
+    botao.setAttribute('aria-label', `Assistir: ${item.titulo}`);
+    botao.addEventListener('click', () => abrirYoutube(item.youtube, item.titulo));
+    selo.append(icone('i-play'));
+    botao.append(selo);
+    return botao;
+  }
+  const link = document.createElement('a');
+  link.className = 'peca-abrir peca-abrir--site';
+  link.href = item.link;
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.setAttribute('aria-label', `Abrir site: ${item.titulo}${item.marca ? ` (${item.marca})` : ''}`);
+  selo.append(icone('i-seta'));
+  link.append(selo);
+  return link;
+}
 
 function criarMidia(item, base) {
   if (!ehVideo(item.arquivo)) {
@@ -34,6 +115,10 @@ function criarPeca(item, categorias, base) {
   legenda.append(nome, detalhe);
 
   figura.append(criarMidia(item, base), legenda);
+  if (item.youtube || item.link) {
+    figura.classList.add('peca--clicavel');
+    figura.append(criarAbertura(item));
+  }
   return figura;
 }
 

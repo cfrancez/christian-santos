@@ -24,6 +24,33 @@ export function ehVideo(arquivo) {
   return /\.(mp4|webm)$/i.test(arquivo);
 }
 
+// "656", "2s" ou "1m30s" → segundos.
+function segundos(tempo) {
+  if (!tempo) return 0;
+  if (/^\d+$/.test(tempo)) return Number(tempo);
+  const partes = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/.exec(tempo);
+  return partes ? Number(partes[1] ?? 0) * 3600 + Number(partes[2] ?? 0) * 60 + Number(partes[3] ?? 0) : 0;
+}
+
+// Link do YouTube (youtu.be, watch, live, shorts) → endereço do player sem cookies, ou null.
+export function embedDoYoutube(link) {
+  let url;
+  try {
+    url = new URL(link);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^(www|m)\./, '');
+  let id = null;
+  if (host === 'youtu.be') id = url.pathname.slice(1);
+  else if (host === 'youtube.com') {
+    id = url.searchParams.get('v') ?? url.pathname.match(/^\/(?:live|embed|shorts)\/([^/]+)/)?.[1] ?? null;
+  }
+  if (!id || !/^[\w-]{6,}$/.test(id)) return null;
+  const inicio = segundos(url.searchParams.get('t') ?? url.searchParams.get('start'));
+  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0${inicio ? `&start=${inicio}` : ''}`;
+}
+
 function problemasDoItem(item, categorias) {
   if (!ehObjeto(item)) return ['não é uma peça; confira vírgulas e chaves'];
   const problemas = [];
@@ -44,6 +71,12 @@ function problemasDoItem(item, categorias) {
   }
   if (!Array.isArray(item.paginas) || !item.paginas.length || !item.paginas.every((p) => PAGINAS.includes(p))) {
     problemas.push(`paginas: use uma ou mais de: ${PAGINAS.join(', ')}`);
+  }
+  if (item.youtube !== undefined && embedDoYoutube(item.youtube) === null) {
+    problemas.push(`youtube '${item.youtube}': cole o link do vídeo (ex.: https://youtu.be/...)`);
+  }
+  if (item.link !== undefined && !/^https:\/\//.test(item.link)) {
+    problemas.push(`link '${item.link}': cole o endereço completo, começando com https://`);
   }
   return problemas;
 }
